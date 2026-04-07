@@ -1,0 +1,80 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="flex items-center space-x-4 mb-12">
+        <h1 class="text-4xl font-extrabold text-gray-800">Keranjang <span class="text-purple-600">Belanja</span></h1>
+        <span class="px-4 py-2 bg-purple-100 text-purple-700 font-bold rounded-2xl text-sm"><%= cart.length %> Items</span>
+    </div>
+
+    <% if (cart.length === 0) { %>
+        <div class="bg-white p-20 rounded-3xl shadow-2xl text-center border-2 border-dashed border-gray-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-40 w-40 text-gray-300 mx-auto mb-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Waduh, Keranjangnya Kosong Nih!</h2>
+            <p class="text-gray-500 text-lg mb-10">Cari sparepart yang kamu butuhkan sekarang!</p>
+            <a href="/products" class="inline-block px-12 py-5 bg-purple-600 text-white rounded-2xl font-bold hover:bg-purple-700 transition shadow-xl hover:shadow-2xl">Mulai Belanja Sekarang</a>
+        </div>
+    <% } else { %>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div class="lg:col-span-2 space-y-6">
+                <% cart.forEach(item => { %>
+                    <div class="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div class="flex items-center space-x-6 w-full md:w-auto">
+                            <div class="w-32 h-32 bg-gray-50 rounded-2xl overflow-hidden flex-shrink-0 border border-gray-100 p-2">
+                                <% if (item.image) { %>
+                                    <img src="/uploads/products/<%= item.image %>" alt="<%= item.name %>" class="w-full h-full object-contain">
+                                <% } else { %>
+                                    <div class="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
+                                <% } %>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 uppercase tracking-wide"><%= item.name %></h3>
+                                <p class="text-purple-600 font-extrabold text-lg mt-1">Rp <%= parseFloat(item.price).toLocaleString('id-ID') %></p>
+                                <a href="/cart/remove/<%= item.product_id %>" class="text-red-500 hover:text-red-700 text-sm font-bold mt-4 inline-block hover:underline">Hapus Produk</a>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-6">
+                            <form action="/cart/update" method="POST" class="flex items-center space-x-3 bg-gray-50 p-2 rounded-2xl border border-gray-200 shadow-inner">
+                                <input type="hidden" name="product_id" value="<%= item.product_id %>">
+                                <button type="submit" name="qty" value="<%= item.qty - 1 %>" class="w-10 h-10 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-100 font-bold transition flex items-center justify-center text-xl shadow-sm">-</button>
+                                <span class="px-6 font-extrabold text-xl text-purple-700"><%= item.qty %></span>
+                                <button type="submit" name="qty" value="<%= item.qty + 1 %>" class="w-10 h-10 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-100 font-bold transition flex items-center justify-center text-xl shadow-sm">+</button>
+                            </form>
+                            <div class="text-right min-w-[150px]">
+                                <p class="text-sm text-gray-400 uppercase font-bold tracking-widest mb-1">Subtotal</p>
+                                <p class="text-2xl font-black text-gray-800">Rp <%= (parseFloat(item.price) * item.qty).toLocaleString('id-ID') %></p>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+
+            <div class="lg:col-span-1">
+                <div class="bg-gray-900 text-white rounded-3xl p-10 shadow-2xl border border-gray-800 sticky top-24">
+                    <h2 class="text-2xl font-bold mb-10 border-b border-gray-800 pb-6 uppercase tracking-widest">Ringkasan Pesanan</h2>
+                    <div class="space-y-6 mb-12">
+                        <div class="flex justify-between text-gray-400">
+                            <span>Subtotal</span>
+                            <span class="text-gray-200">Rp <%= total_price.toLocaleString('id-ID') %></span>
+                        </div>
+                        <div class="flex justify-between text-gray-400">
+                            <span>Pengiriman</span>
+                            <span class="text-green-400 font-bold uppercase text-xs">FREE SHIPPING</span>
+                        </div>
+                        <hr class="border-gray-800">
+                        <div class="flex justify-between items-center pt-4">
+                            <span class="text-xl font-bold uppercase tracking-wider">Total Harga</span>
+                            <span class="text-3xl font-black text-purple-500">Rp <%= total_price.toLocaleString('id-ID') %></span>
+                        </div>
+                    </div>
+                    <a href="/checkout" class="block w-full py-5 bg-purple-600 text-white text-center rounded-2xl font-bold hover:bg-purple-700 shadow-xl transition-all hover:scale-105 active:scale-95 text-lg uppercase tracking-widest">Lanjut ke Checkout</a>
+                    <div class="mt-8 flex items-center justify-center space-x-2 text-gray-500 text-xs font-bold uppercase tracking-widest">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <span>Secure Checkout</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } %>
+</div>

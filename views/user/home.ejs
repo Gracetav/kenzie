@@ -1,0 +1,53 @@
+<div class="bg-purple-gradient text-white py-24 mb-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between">
+        <div class="md:w-1/2 mb-10 md:mb-0">
+            <h1 class="text-5xl font-extrabold mb-6 leading-tight">Ganti Sparepart <br> Motor Anda di Sini!</h1>
+            <p class="text-xl mb-8 opacity-90">Dapatkan kualitas sparepart original untuk performa motor maksimal Anda hanya di KenziemotoSport.</p>
+            <a href="/products" class="px-8 py-4 bg-white text-purple-700 font-bold rounded-2xl hover:bg-gray-100 transition shadow-xl inline-block">Mulai Belanja Sekarang</a>
+        </div>
+        <div class="md:w-1/3 flex justify-center">
+            <div class="w-64 h-64 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-md border border-white border-opacity-30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-32 w-32 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+    <div class="flex justify-between items-center mb-10">
+        <h2 class="text-3xl font-bold text-gray-800 border-l-8 border-purple-600 pl-4">Produk Terbaru</h2>
+        <a href="/products" class="text-purple-600 font-semibold hover:underline">Lihat Semua &rarr;</a>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <% products.forEach(product => { %>
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
+                <div class="w-full h-48 bg-gray-100 rounded-xl mb-4 overflow-hidden">
+                    <% if (product.image) { %>
+                        <img src="/uploads/products/<%= product.image %>" alt="<%= product.name %>" class="w-full h-full object-cover">
+                    <% } else { %>
+                        <div class="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
+                    <% } %>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 mb-1"><%= product.name %></h3>
+                <p class="text-purple-600 font-extrabold text-xl mb-4">Rp <%= parseFloat(product.price).toLocaleString('id-ID') %></p>
+                <div class="flex space-x-2">
+                    <a href="/products/<%= product.id %>" class="flex-grow py-2 bg-gray-100 text-gray-700 rounded-lg font-bold text-center hover:bg-gray-200 transition">Detail</a>
+                    <form action="/cart/add" method="POST" class="inline">
+                        <input type="hidden" name="product_id" value="<%= product.id %>">
+                        <input type="hidden" name="name" value="<%= product.name %>">
+                        <input type="hidden" name="price" value="<%= product.price %>">
+                        <input type="hidden" name="image" value="<%= product.image %>">
+                        <button type="submit" class="p-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</div>

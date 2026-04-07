@@ -1,0 +1,34 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h1 class="text-3xl font-extrabold text-gray-800 mb-10 border-b-4 border-purple-600 inline-block pb-2">Semua Koleksi Produk</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <% products.forEach(product => { %>
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 transition hover:scale-105 duration-300">
+                <div class="w-full h-48 bg-gray-100 rounded-xl mb-4 overflow-hidden relative">
+                    <% if (product.image) { %>
+                        <img src="/uploads/products/<%= product.image %>" alt="<%= product.name %>" class="w-full h-full object-cover">
+                    <% } else { %>
+                        <div class="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
+                    <% } %>
+                    <span class="absolute top-2 right-2 bg-purple-600 text-white text-xs px-2 py-1 rounded-full font-bold">In Stock</span>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 mb-1 leading-tight"><%= product.name %></h3>
+                <p class="text-purple-600 font-extrabold text-xl mb-4 leading-none">Rp <%= parseFloat(product.price).toLocaleString('id-ID') %></p>
+                <div class="flex space-x-2">
+                    <a href="/products/<%= product.id %>" class="flex-grow py-3 bg-gray-100 text-gray-700 rounded-xl font-bold text-center hover:bg-gray-200 transition text-sm">Review</a>
+                    <form action="/cart/add" method="POST" class="inline">
+                        <input type="hidden" name="product_id" value="<%= product.id %>">
+                        <input type="hidden" name="name" value="<%= product.name %>">
+                        <input type="hidden" name="price" value="<%= product.price %>">
+                        <input type="hidden" name="image" value="<%= product.image %>">
+                        <button type="submit" class="px-3 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</div>

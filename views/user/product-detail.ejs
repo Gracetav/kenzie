@@ -1,0 +1,44 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="flex flex-col md:flex-row gap-16">
+        <div class="md:w-1/2">
+            <div class="bg-white rounded-3xl p-10 shadow-2xl overflow-hidden border border-gray-100 flex items-center justify-center min-h-[500px]">
+                <% if (product.image) { %>
+                    <img src="/uploads/products/<%= product.image %>" alt="<%= product.name %>" class="w-full h-full object-contain max-h-[500px]">
+                <% } else { %>
+                    <div class="w-full h-full flex items-center justify-center text-gray-400">No Image Available</div>
+                <% } %>
+            </div>
+        </div>
+        <div class="md:w-1/2 space-y-8 flex flex-col justify-center">
+            <div class="space-y-4">
+                <h1 class="text-5xl font-black text-gray-800 leading-tight uppercase tracking-wide"><%= product.name %></h1>
+                <div class="flex items-center space-x-2">
+                    <span class="px-3 py-1 bg-green-100 text-green-700 font-bold text-xs rounded-full uppercase">Stok Tersedia: <%= product.stock %></span>
+                    <span class="px-3 py-1 bg-purple-100 text-purple-700 font-bold text-xs rounded-full uppercase">Original Kenzie</span>
+                </div>
+                <p class="text-4xl font-extrabold text-purple-700">Rp <%= parseFloat(product.price).toLocaleString('id-ID') %></p>
+            </div>
+            
+            <div class="border-t border-gray-200 pt-8">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">Deskripsi Produk</h3>
+                <p class="text-gray-600 leading-relaxed"><%= product.description || 'Belum ada deskripsi untuk produk ini.' %></p>
+            </div>
+
+            <div class="flex flex-col space-y-4 pt-4">
+                <form action="/cart/add" method="POST" class="inline">
+                    <input type="hidden" name="product_id" value="<%= product.id %>">
+                    <input type="hidden" name="name" value="<%= product.name %>">
+                    <input type="hidden" name="price" value="<%= product.price %>">
+                    <input type="hidden" name="image" value="<%= product.image %>">
+                    <button type="submit" class="w-full py-5 bg-purple-600 text-white rounded-2xl font-bold hover:bg-purple-700 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center space-x-3 text-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <span>TAMBAH KE KERANJANG</span>
+                    </button>
+                </form>
+                <a href="/products" class="text-center font-bold text-purple-600 border-2 border-purple-600 py-4 rounded-2xl bg-white hover:bg-purple-50 transition uppercase tracking-widest text-sm">Kembali ke Katalog</a>
+            </div>
+        </div>
+    </div>
+</div>

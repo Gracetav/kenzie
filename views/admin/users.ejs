@@ -1,0 +1,47 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="mb-16">
+        <h1 class="text-4xl font-extrabold text-gray-800 uppercase tracking-widest leading-tight">Database <br> <span class="text-purple-600">Pelanggan Aktif</span></h1>
+        <p class="text-gray-400 mt-2 font-bold uppercase text-[10px] tracking-widest">Manajemen Akun Terdaftar KenziemotoSport.</p>
+    </div>
+
+    <div class="bg-white rounded-[40px] shadow-2xl border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-900 text-white">
+                        <th class="px-10 py-8 font-black uppercase tracking-widest text-xs">Informasi User</th>
+                        <th class="px-10 py-8 font-black uppercase tracking-widest text-xs">Alamat Email</th>
+                        <th class="px-10 py-8 font-black uppercase tracking-widest text-xs">Terdaftar Pada</th>
+                        <th class="px-10 py-8 font-black uppercase tracking-widest text-xs">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <% users.forEach(u => { %>
+                        <tr class="group hover:bg-gray-50 transition duration-300">
+                            <td class="px-10 py-8">
+                                <div class="flex items-center space-x-6">
+                                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-purple-700 font-black text-xl uppercase shadow-inner"><%= u.name.charAt(0) %></div>
+                                    <h3 class="text-xl font-extrabold text-gray-800 uppercase tracking-tight group-hover:text-purple-600 transition"><%= u.name %></h3>
+                                </div>
+                            </td>
+                            <td class="px-10 py-8">
+                                <p class="text-gray-500 font-bold tracking-tight"><%= u.email %></p>
+                            </td>
+                            <td class="px-10 py-8">
+                                <p class="text-xs text-gray-400 font-bold uppercase tracking-widest"><%= new Date(u.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) %></p>
+                            </td>
+                            <td class="px-10 py-8">
+                                <a href="/admin/users/delete/<%= u.id %>" onclick="return confirm('Hapus user ini?')" class="px-6 py-3 bg-red-50 text-red-500 rounded-xl font-bold hover:bg-red-500 hover:text-white transition shadow-sm hover:shadow-xl uppercase tracking-widest text-[10px] border border-red-100">Hapus User</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                    <% if (users.length === 0) { %>
+                        <tr>
+                            <td colspan="4" class="py-20 text-center text-gray-400 font-bold uppercase tracking-widest">Belum ada user yang terdaftar.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
