@@ -32,7 +32,9 @@
                     <% } %>
                 </div>
                 <h3 class="text-lg font-bold text-gray-800 mb-1"><%= product.name %></h3>
-                <p class="text-purple-600 font-extrabold text-xl mb-4">Rp <%= parseFloat(product.price).toLocaleString('id-ID') %></p>
+                <p class="text-purple-600 font-extrabold text-xl mb-4">
+                    Rp <%= (product.price != null) ? parseFloat(product.price).toLocaleString('id-ID') : '0' %>
+                </p>
                 <div class="flex space-x-2">
                     <a href="/products/<%= product.id %>" class="flex-grow py-2 bg-gray-100 text-gray-700 rounded-lg font-bold text-center hover:bg-gray-200 transition">Detail</a>
                     <form action="/cart/add" method="POST" class="inline">
