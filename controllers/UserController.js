@@ -35,9 +35,14 @@ exports.updateCart = (req, res) => {
     let cart = req.session.cart || [];
     const index = cart.findIndex(item => item.product_id == product_id);
     if (index !== -1) {
-        cart[index].qty = parseInt(qty);
-        if (cart[index].qty <= 0) cart.splice(index, 1);
+        const newQty = parseInt(qty);
+        if (isNaN(newQty) || newQty <= 0) {
+            cart.splice(index, 1);
+        } else {
+            cart[index].qty = newQty;
+        }
     }
+
     req.session.cart = cart;
     res.redirect('/cart');
 };
@@ -50,26 +55,67 @@ exports.removeFromCart = (req, res) => {
 };
 
 // --- Checkout ---
+// --- Checkout ---
 exports.checkout = async (req, res) => {
     const cart = req.session.cart || [];
     if (cart.length === 0) return res.redirect('/cart');
+    
     const user_id = req.session.user.id;
     let total_price = 0;
-    cart.forEach(item => total_price += parseFloat(item.price) * item.qty);
-
+    
+    // Prepare items and calculate total
+    const validatedItems = [];
     try {
-        const [order] = await db.execute('INSERT INTO orders (user_id, total_price) VALUES (?, ?)', [user_id, total_price]);
-        const order_id = order.insertId;
         for (const item of cart) {
-            await db.execute('INSERT INTO order_items (order_id, product_id, qty, price) VALUES (?, ?, ?, ?)', [order_id, item.product_id, item.qty, item.price]);
+            const price = parseFloat(item.price);
+            const qty = parseInt(item.qty);
+            if (isNaN(price) || isNaN(qty)) {
+                throw new Error(`Invalid data for product: ${item.name}`);
+            }
+            total_price += price * qty;
+            validatedItems.push({
+                ...item,
+                price: price,
+                qty: qty
+            });
         }
+    } catch (err) {
+        console.error('Cart Validation Error:', err.message);
+        return res.status(400).send('Invalid Cart Content: ' + err.message);
+    }
+
+    const connection = await db.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        // 1. Create Order
+        const [orderResult] = await connection.execute(
+            'INSERT INTO orders (user_id, total_price) VALUES (?, ?)', 
+            [user_id, total_price]
+        );
+        const order_id = orderResult.insertId;
+
+        // 2. Create Order Items
+        for (const item of validatedItems) {
+            await connection.execute(
+                'INSERT INTO order_items (order_id, product_id, qty, price) VALUES (?, ?, ?, ?)', 
+                [order_id, item.product_id, item.qty, item.price]
+            );
+        }
+
+        await connection.commit();
         req.session.cart = []; // Empty cart
         res.redirect('/orders/' + order_id);
     } catch (err) {
-        console.log(err);
-        res.status(500).send('Checkout Error');
+        await connection.rollback();
+        console.error('Checkout Transaction Error:', err);
+        res.status(500).send('Checkout Error: ' + err.message);
+    } finally {
+        connection.release();
     }
 };
+
+
 
 exports.getMyOrders = async (req, res) => {
     const user_id = req.session.user.id;
